@@ -14,7 +14,10 @@ if (window._phantom) {
 (function() {
   phantom.sendMessage = function() {
     var args = [].slice.call(arguments);
-    var payload = stringify(args);
+
+    var ignoreCircularRefDetection = (args.length > 0 && args[0] == "jasmine.coverage")
+
+    var payload = stringify(args,ignoreCircularRefDetection);
     if (window._phantom) {
       // alerts are the communication bridge to grunt
       alert(payload);
@@ -73,7 +76,7 @@ if (window._phantom) {
     phantom.sendMessage('jasmine.specDone', specMetadata);
   };
 
-  function stringify(obj) {
+  function stringify(obj, ignoreCircularRefDetection) {
     if (typeof obj !== 'object') {
       return obj;
     }
@@ -111,12 +114,15 @@ if (window._phantom) {
 
         if (typeof value === 'object' && value !== null) {
 
-          var index = cache.indexOf(value);
+          if (!ignoreCircularRefDetection) {
+            var index = cache.indexOf(value);
 
-          if (index !== -1) {
-            // If we have it in cache, report the circle with the key we first found it in
-            return '[ Circular {' + (keyMap[index] || 'root') + '} ]';
+            if (index !== -1) {
+              // If we have it in cache, report the circle with the key we first found it in
+              return '[ Circular {' + (keyMap[index] || 'root') + '} ]';
+            }            
           }
+
           cache.push(value);
           keyMap.push(key);
         }
