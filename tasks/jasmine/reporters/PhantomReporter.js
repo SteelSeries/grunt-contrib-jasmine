@@ -127,7 +127,7 @@ if (window._phantom) {
           keyMap.push(key);
         }
       } catch (e) {
-          return '[Object]';
+        return '[Object]';
       }
       return value;
     });

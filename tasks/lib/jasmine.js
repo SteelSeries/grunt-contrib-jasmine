@@ -85,6 +85,12 @@ exports.init = function(grunt, phantomjs) {
       return path.join(tempDir, name);
     });
 
+    var bootFile = tempDir + '/boot.js';
+
+    if (options.customBootFile !== null) {
+      bootFile = options.customBootFile;
+    }
+
     var context = {
       temp: tempDir,
       outfile: outfile,
@@ -97,7 +103,7 @@ exports.init = function(grunt, phantomjs) {
         src: exports.getRelativeFileList(outdir, src, { nonull: true }),
         vendor: exports.getRelativeFileList(outdir, options.vendor, { nonull: true }),
         reporters: exports.getRelativeFileList(outdir, reporters),
-        boot: exports.getRelativeFileList(outdir, tempDir + '/boot.js')
+        boot: exports.getRelativeFileList(outdir, bootFile)
       },
       options: options.templateOptions || {}
     };
@@ -126,8 +132,7 @@ exports.init = function(grunt, phantomjs) {
     patterns = patterns instanceof Array ? patterns : [ patterns ];
     options = options || {};
 
-    var files = grunt.file.expand(options, grunt.util._(patterns).compact());
-    files = grunt.util._(files).map(function(file) {
+    var files = grunt.file.expand(options, _.compact(patterns)).map(function(file) {
       return (/^https?:/).test(file) ? file : path.relative(outdir, file).replace(/\\/g, '/');
     });
     return files;
@@ -174,4 +179,3 @@ exports.init = function(grunt, phantomjs) {
 
   return exports;
 };
-

@@ -55,10 +55,10 @@ grunt.initConfig({
       options: {
         specs: 'spec/*Spec.js',
         helpers: 'spec/*Helper.js',
-        template: require('exports-process.js')
+        template: require('exports-process.js'),
         vendor: [
-          "vendor/*.js",
-          "http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"
+          'vendor/*.js',
+          'http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js'
         ]
       }
     }

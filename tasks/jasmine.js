@@ -2,7 +2,7 @@
  * grunt-contrib-jasmine
  * http://gruntjs.com/
  *
- * Copyright (c) 2015 GruntJS Team
+ * Copyright (c) 2016 GruntJS Team
  * Licensed under the MIT license.
  */
 
@@ -11,8 +11,9 @@
 module.exports = function(grunt) {
 
   // node api
-  var fs   = require('fs'),
-      path = require('path');
+  var fs = require('fs'),
+      path = require('path'),
+      sprintf = require("sprintf-js").sprintf;
 
   // npm lib
   var phantomjs = require('grunt-lib-phantomjs').init(grunt),
@@ -70,13 +71,14 @@ module.exports = function(grunt) {
 
     // Merge task-specific options with these defaults.
     var options = this.options({
-      version: '2.0.1',
+      version: '2.2.0',
       timeout: 10000,
       styles: [],
       specs: [],
       helpers: [],
       vendor: [],
       polyfills: [],
+      customBootFile: null,
       outfile: '_SpecRunner.html',
       host: '',
       template: path.join(__dirname, '/jasmine/templates/DefaultRunner.tmpl'),
@@ -202,7 +204,7 @@ module.exports = function(grunt) {
         grunt.log.error(chalk.red(string) + ' at ');
         trace.forEach(function(line) {
           var file = line.file.replace(/^file:/, '');
-          var message = grunt.util._('%s:%d %s').sprintf(path.relative('.', file), line.line, line.function);
+          var message = sprintf('%s:%d %s', path.relative('.', file), line.line, line.function);
           grunt.log.error(chalk.red(message));
         });
       } else {
@@ -397,7 +399,7 @@ module.exports = function(grunt) {
       var template = grunt.file.read(options.junit.template || junitTemplate);
       if (options.junit.consolidate) {
         var xmlFile = path.join(options.junit.path, 'TEST-' + testsuites.suite1.name.replace(/[^\w]/g, '') + '.xml');
-        grunt.file.write(xmlFile, grunt.util._.template(template, { testsuites: _.values(testsuites)}));
+        grunt.file.write(xmlFile, _.template(template, { testsuites: _.values(testsuites) }));
       } else {
         _.forEach(testsuites, function(suiteData) {
           var xmlFile = path.join(options.junit.path, 'TEST-' + suiteData.name.replace(/[^\w]/g, '') + '.xml');
